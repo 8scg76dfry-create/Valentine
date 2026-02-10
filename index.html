@@ -1,50 +1,181 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Valentine?</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Valentine 💘</title>
 
   <style>
     body {
-      background-color: #ffd6e7;
+      margin: 0;
       font-family: Arial, sans-serif;
+      background: #ffd6e7;
       text-align: center;
-      padding-top: 100px;
+      overflow: hidden;
     }
 
     h1 {
       font-size: 36px;
+      margin-bottom: 10px;
+    }
+
+    p {
+      font-size: 16px;
+      margin-bottom: 20px;
     }
 
     button {
       font-size: 20px;
-      padding: 12px 24px;
-      margin: 20px;
+      padding: 12px 26px;
+      border: none;
+      border-radius: 999px;
       cursor: pointer;
-      position: relative;
+    }
+
+    #yes {
+      background: #ff4d8d;
+      color: white;
     }
 
     #no {
+      background: #f2f2f2;
       position: absolute;
+    }
+
+    .screen {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+    }
+
+    .buttons {
+      position: relative;
+      width: 300px;
+      height: 80px;
+    }
+
+    /* YES SCREEN */
+    #yesScreen {
+      display: none;
+      background: #ffb6d5;
+      padding: 20px;
+    }
+
+    .otters {
+      display: flex;
+      gap: 20px;
+      margin: 20px 0;
+    }
+
+    .otters img {
+      width: 180px;
+      border-radius: 20px;
+      box-shadow: 0 12px 30px rgba(0,0,0,0.25);
+      animation: pop 0.4s ease-out both;
+    }
+
+    @keyframes pop {
+      from { transform: scale(0.6); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    .message {
+      max-width: 650px;
+      background: rgba(255,255,255,0.7);
+      padding: 18px 20px;
+      border-radius: 18px;
+      font-size: 18px;
+      line-height: 1.35;
+      box-shadow: 0 12px 30px rgba(0,0,0,0.15);
+    }
+
+    /* floating hearts */
+    .heart {
+      position: fixed;
+      bottom: -20px;
+      font-size: 18px;
+      animation: floatUp linear forwards;
+      pointer-events: none;
+    }
+
+    @keyframes floatUp {
+      to { transform: translateY(-120vh); opacity: 0; }
     }
   </style>
 </head>
 
 <body>
 
-  <h1>💘 Will you be my Valentine? 💘</h1>
+  <!-- FIRST SCREEN -->
+  <div class="screen" id="firstScreen">
+    <h1>💘 Will you be my Valentine? 💘</h1>
+    <p>Please choose wisely 😌</p>
 
-  <button onclick="alert('YAY 💖 I knew it!')">Yes 💕</button>
-  <button id="no">No 😈</button>
+    <div class="buttons" id="arena">
+      <button id="yes">Yes 💕</button>
+      <button id="no">No 😈</button>
+    </div>
+  </div>
+
+  <!-- YES SCREEN -->
+  <div class="screen" id="yesScreen">
+    <h1>YAY 💖</h1>
+
+    <div class="otters">
+      <img src="otter.jpg" alt="Otter cuddle">
+      <img src="otter.jpg" alt="Otter cuddle">
+    </div>
+
+    <div class="message">
+      I’m really glad you said yes 🥹💗<br><br>
+      I can’t wait to spend Valentine’s Day with you —  
+      good food, laughs, and maybe holding hands like these otters 🦦🦦
+    </div>
+  </div>
 
   <script>
     const noBtn = document.getElementById("no");
+    const yesBtn = document.getElementById("yes");
+    const arena = document.getElementById("arena");
+    const firstScreen = document.getElementById("firstScreen");
+    const yesScreen = document.getElementById("yesScreen");
 
-    noBtn.addEventListener("mouseover", () => {
-      const x = Math.random() * (window.innerWidth - 100);
-      const y = Math.random() * (window.innerHeight - 100);
-      noBtn.style.left = x + "px";
-      noBtn.style.top = y + "px";
+    function moveNo() {
+      const rect = arena.getBoundingClientRect();
+      const maxX = rect.width - noBtn.offsetWidth;
+      const maxY = rect.height - noBtn.offsetHeight;
+
+      noBtn.style.left = Math.random() * maxX + "px";
+      noBtn.style.top = Math.random() * maxY + "px";
+    }
+
+    noBtn.addEventListener("mouseenter", moveNo);
+    noBtn.addEventListener("touchstart", (e) => {
+      e.preventDefault();
+      moveNo();
+    }, { passive: false });
+
+    moveNo();
+
+    function spawnHeart() {
+      const h = document.createElement("div");
+      h.className = "heart";
+      h.textContent = Math.random() > 0.5 ? "💗" : "💘";
+      h.style.left = Math.random() * 100 + "vw";
+      h.style.animationDuration = (3 + Math.random() * 3) + "s";
+      document.body.appendChild(h);
+      setTimeout(() => h.remove(), 6000);
+    }
+
+    yesBtn.addEventListener("click", () => {
+      firstScreen.style.display = "none";
+      yesScreen.style.display = "flex";
+      for (let i = 0; i < 30; i++) {
+        setTimeout(spawnHeart, i * 60);
+      }
     });
   </script>
 
